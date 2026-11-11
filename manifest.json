@@ -2,8 +2,9 @@
   "schemaVersion": 1,
   "id": "binaryfever.paper-peek",
   "name": "Paper Peek",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "author": "Fred McHale",
+  "license": "MIT",
   "description": "View your Paper designs in a drawer beside your code",
   "kinds": ["bar-widget", "overlay"],
   "keepLoaded": true,
@@ -11,5 +12,11 @@
     "barWidget": "BarWidget.qml",
     "overlay": "Drawer.qml"
   },
-  "barWidget": { "defaultSection": "left" }
+  "barWidget": {
+    "displayName": "Paper Peek",
+    "description": "A dot that opens a drawer with the current Paper artboard in it, beside your code.",
+    "category": "Design",
+    "aliases": ["paper", "peek", "artboard", "design"],
+    "defaultSection": "left"
+  }
 }
