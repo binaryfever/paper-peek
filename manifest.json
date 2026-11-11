@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "binaryfever.paper-peek",
   "name": "Paper Peek",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Fred McHale",
   "license": "MIT",
   "description": "View your Paper designs in a drawer beside your code",
@@ -17,6 +17,6 @@
     "description": "A dot that opens a drawer with the current Paper artboard in it, beside your code.",
     "category": "Design",
     "aliases": ["paper", "peek", "artboard", "design"],
-    "defaultSection": "left"
+    "defaultSection": "right"
   }
 }

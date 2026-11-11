@@ -4,7 +4,6 @@ import Quickshell.Io
 import qs.Commons
 import qs.Commons as Commons
 import qs.Ui
-import "theme-green.js" as ThemeGreen
 
 BarWidget {
   id: root
@@ -14,31 +13,19 @@ BarWidget {
   readonly property string statusPath: (Quickshell.env("XDG_STATE_HOME") || (home + "/.local/state")) + "/paper-peek/status"
 
   property string peekStatus: "off"
-  property bool hasThemeGreen: false
-  property color themeGreen: Commons.Color.accent
-  readonly property color liveColor: hasThemeGreen ? themeGreen : Commons.Color.accent
-  readonly property string themeColorsPath: home + "/.local/state/omarchy/current/theme/colors.toml"
 
-  function applyThemeGreen(raw) {
-    var color = ThemeGreen.greenIn(raw)
-    if (color !== "") {
-      root.themeGreen = color
-      root.hasThemeGreen = true
-      return
-    }
-    root.hasThemeGreen = false
-  }
-
-  implicitWidth: vertical ? barSize : Style.bar.statusSlot
-  implicitHeight: vertical ? Style.bar.statusSlot : barSize
+  implicitWidth: vertical ? barSize : Style.bar.iconSlot
+  implicitHeight: vertical ? Style.bar.iconSlot : barSize
 
   function applyStatus(text) {
     var word = String(text || "").trim()
     if (word === "live" || word === "not-live" || word === "off") root.peekStatus = word
   }
 
-  function openDrawer() {
-    IpcRegistry.call("binaryfever.paper-peek", "open", [])
+  // Toggle, not open: a second press on the icon that opened the drawer is the
+  // obvious way to close it, and the hotkey already works that way.
+  function toggleDrawer() {
+    IpcRegistry.call("binaryfever.paper-peek", "toggle", [])
   }
 
   FileView {
@@ -50,45 +37,23 @@ BarWidget {
     onFileChanged: reload()
   }
 
-  FileView {
-    id: themeColors
-    path: root.themeColorsPath
-    watchChanges: false
-    blockLoading: false
-    printErrors: false
-    onLoaded: root.applyThemeGreen(text())
-    onLoadFailed: root.applyThemeGreen("")
-  }
-
-  Connections {
-    target: Commons.Color
-    function onShellValuesChanged() {
-      themeColors.reload()
-    }
-  }
-
   WidgetButton {
     anchors.fill: parent
     bar: root.bar
     keepSpace: true
-    text: ""
-    labelVisible: false
-    hasVisualContent: true
+    // The bar font's artboard glyph, nf-md-vector-square: a frame with corner
+    // handles, which is what an artboard is drawn as everywhere else. Outline
+    // weight, so it sits with the other status icons rather than shouting over
+    // them. The three colours are the theme's own roles, the same three the
+    // drawer's footer dot draws.
+    text: "󰀁"
+    foreground: root.peekStatus === "live"
+      ? Commons.Color.accent
+      : (root.peekStatus === "not-live" ? Commons.Color.urgent : Commons.Color.muted)
     // The same three words the drawer's footer draws. The bar deliberately
     // does not load the drawer's layout module for them, so a test holds these
     // literals against statusWord to stop the two drifting apart.
     tooltipText: root.peekStatus === "live" ? "Connected" : (root.peekStatus === "not-live" ? "Not connected" : "No artboard")
-    onPressed: root.openDrawer()
-
-    // The same dot the drawer's status line draws, built the same way: two of
-    // the theme's small steps across, so a theme that scales its spacing
-    // scales the dot with it.
-    Rectangle {
-      width: Style.spacing.sm * 2
-      height: width
-      radius: height / 2
-      anchors.centerIn: parent
-      color: root.peekStatus === "live" ? root.liveColor : (root.peekStatus === "not-live" ? Commons.Color.urgent : Commons.Color.muted)
-    }
+    onPressed: root.toggleDrawer()
   }
 }

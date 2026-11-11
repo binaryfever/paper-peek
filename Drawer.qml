@@ -1227,7 +1227,12 @@ Item {
 
     visible: reveal > 0.01 || root.zoomed
     color: "transparent"
-    exclusionMode: ExclusionMode.Ignore
+    // Reserve nothing, but stay out of what the bar has reserved, which is how
+    // the dock sits under the bar rather than over it. Ignore would span the
+    // whole screen and take the clicks over the bar with it, so the widget
+    // that opened the drawer could not be clicked to close it again.
+    exclusionMode: ExclusionMode.Normal
+    exclusiveZone: 0
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.namespace: "binaryfever-paper-peek"
     // OnDemand while the drawer is a strip, never Exclusive. Exclusive sends
