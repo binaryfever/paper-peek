@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "binaryfever.paper-peek",
+  "name": "Paper Peek",
+  "version": "0.0.1",
+  "author": "Fred McHale",
+  "description": "View your Paper designs in a drawer beside your code",
+  "kinds": ["bar-widget", "overlay"],
+  "keepLoaded": true,
+  "entryPoints": {
+    "barWidget": "BarWidget.qml",
+    "overlay": "Drawer.qml"
+  },
+  "barWidget": { "defaultSection": "left" }
+}
